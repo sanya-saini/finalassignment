@@ -15,8 +15,6 @@ import aroundworld from './aroundworld';
 import hourly from './hourly';
 import realtime from './realtime';
 import detailedhourly from './detailedhourly';
-import home from './home'
-import search from './search'
 
 export const Pics = {
     rec,
@@ -36,6 +34,4 @@ export const Pics = {
     hourly,
     realtime,
     detailedhourly,
-    home,
-    search
 };

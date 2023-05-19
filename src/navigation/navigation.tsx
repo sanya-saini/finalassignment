@@ -5,9 +5,9 @@ import {createStackNavigator} from '@react-navigation/stack';
 import { useEffect, useState } from 'react';
 import Splash from '../screens/splash';
 import DetailsScreen from '../screens/detailsScreen';
+import Players from '../screens/players';
 import SwiperComponent from '../screens/onboarding';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Pics } from '../assets/images';
 
 const TabNav = createBottomTabNavigator();
 
@@ -24,6 +24,10 @@ const AppNav = () => {
       }
     });
   }, []);
+
+
+
+
 
   const Stack = createStackNavigator();
   const [isLoading, setIsLoading] = useState(true);
@@ -54,10 +58,10 @@ const AppNav = () => {
         </TabNav.Navigator> */}
         <Stack.Navigator>
         {isLoading ?  <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}} /> : null }
-        {/* {onboard?<Stack.Screen name='SwiperComponent' component={SwiperComponent} options={{headerShown: false}} />:null} */}
-        {/* <Stack.Screen name="Splash" component={Splash} options={{headerShown: false}} /> */}
-        <Stack.Screen name='SwiperComponent' component={SwiperComponent} options={{headerShown: false}} />
-        
+        {onboard?<Stack.Screen name='SwiperComponent' component={SwiperComponent} options={{headerShown: false}} />:null}
+        {/* <Stack.Screen name='SwiperComponent' component={SwiperComponent} options={{headerShown: false}} /> */}
+
+
         <Stack.Screen name='DashboardNavigation' component={DashboardNavigation} options={{headerShown: false}} />
         
         {/* <Stack.Screen name='Home' component={Home} options={{headerShown: false}} /> */}

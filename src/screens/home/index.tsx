@@ -1,55 +1,14 @@
-import {View, Text, ImageBackground, Image, FlatList,PermissionsAndroid, ActivityIndicator} from 'react-native';
-import React, { useEffect, useState} from 'react';
+import {View, Text, ImageBackground, Image, FlatList,PermissionsAndroid} from 'react-native';
+import React, { useEffect } from 'react';
 import {styles} from './style';
 import { Pics } from '../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
 import Txt from '../../components/texts';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-import Geolocation from '@react-native-community/geolocation';
+
 
 const Home = () => {
-  const [longitude, setLongitude] = useState<number>();
-    const [latitude, setLatitude] = useState<number>();
-
-    const getLocation = async () => {
-        try {
-            const permission = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
-                title: 'Location Access Required',
-                message: 'This app needs to access your location'
-            },
-            );
-            if (permission === 'granted') {
-                const currentLocation = await Geolocation.getCurrentPosition(
-                    (position) => {
-                        console.log('hhhhhhhhhh', position);
-                        //getting latitude
-                        const currentLatitude = (position.coords.latitude);
-                        //set latitude
-                        setLatitude(currentLatitude);
-                        //getting longitude
-                        const currentLongitude = (position.coords.longitude);
-                        // set longitude
-                        setLongitude(currentLongitude);
-                        
-                        
-                        // Geocoder.geocodePosition({ lat: position.coords.latitude, lng: position.coords.longitude }).then(res => {
-                        //     console.log(res[0].adminArea)
-                        //     setAddress(res[0].adminArea)
-                        // })
-                            // .catch(err => console.log(err))
-                    }
-                );
-            }
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
-    useEffect(() => {
-        getLocation();
-    }, []);
   const data1 = [
     {
       time: '10 AM',
@@ -131,34 +90,22 @@ const Home = () => {
   };
 
 
-console.log(`${latitude},${longitude}`);
+
   const { isLoading, error, data:yt } = useQuery('', async () => {
-    console.log(`${latitude},${longitude}`);
     const response = await axios.get('https://weatherapi-com.p.rapidapi.com/current.json',
     {
-      // params: {q: `${latitude},${longitude}`}, 
-      
-      params: {q: '37.4220936,-122.083922'},
+      params: {q: '30.7,76.7'},
       headers: {
         'X-RapidAPI-Key': '9c990d7ed0msh6437e1bae24d7eep1c6402jsncf6c307781da',
         'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
       }
     });
-    console.log(response.data);
+    console.log(response.data.current);
     
     return response.data;
   });
   if (isLoading) {
-    return <View>
-    <ImageBackground source={require('../../assets/images/img.png')}>
-    <LinearGradient colors={['#331972', '#33143C']} style={styles.linearGradient}>
-      <View style={{justifyContent:'center', alignItems:'center', flex:1}}>
-      <ActivityIndicator size={'large'} color={'white'} />
-      </View>
-      </LinearGradient>
-    </ImageBackground>
-
-      </View>;
+    return <View><Text>Loading...</Text></View>;
   }
   if (error) {
     return <View><Text>An error has occurred:{error.message}</Text></View>;
@@ -207,7 +154,7 @@ console.log(`${latitude},${longitude}`);
   //   requestLocationPermission();
   // },[]);
 
- 
+
 
   return (
     <ImageBackground source={require('../../assets/images/img.png')} style={{flex:1}}>
