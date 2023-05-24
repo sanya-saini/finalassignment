@@ -15,6 +15,12 @@ import aroundworld from './aroundworld';
 import hourly from './hourly';
 import realtime from './realtime';
 import detailedhourly from './detailedhourly';
+import home from './home';
+import search from './search';
+import location from './location';
+import rainBD from './rainBD';
+import rainBN from './rainBN';
+import cloudySearch from './cloudySearch';
 
 export const Pics = {
     rec,
@@ -34,4 +40,10 @@ export const Pics = {
     hourly,
     realtime,
     detailedhourly,
+    home,
+    search,
+    location,
+    rainBD,
+    rainBN,
+    cloudySearch
 };

@@ -1,207 +1,294 @@
-import {View, Text, ImageBackground, Image, FlatList,PermissionsAndroid} from 'react-native';
-import React, { useEffect } from 'react';
-import {styles} from './style';
+import { View, Text, ImageBackground, Image, FlatList, PermissionsAndroid, ActivityIndicator, TouchableOpacity, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { styles } from './style';
 import { Pics } from '../../assets/images';
 import LinearGradient from 'react-native-linear-gradient';
-import Txt from '../../components/texts';
+import DetailBox from '../../components/texts';
 import { useQuery } from 'react-query';
 import axios from 'axios';
-
+import Geolocation from '@react-native-community/geolocation';
+import PushNotification from "react-native-push-notification";
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import { ScrollView } from 'react-native-gesture-handler';
+import { format } from "date-fns";
+import { useNavigation } from '@react-navigation/native';
+import colors from '../../assets/colors';
+import { API_HOST, API_KEY, BASE_URL, CURRENT, FORECAST } from '../../services/endpoints';
+import { Strings } from '../../constants/strings';
+import citiesData from './cities';
+import Geocoder from 'react-native-geocoder';
 
 const Home = () => {
-  const data1 = [
-    {
-      time: '10 AM',
-      img: Pics.cloudy,
-      temp: '23°',
-    },
-    {
-      time: '12 AM',
-      img: Pics.snowy,
-      temp:'23°',
-    },
-    {
-      time: '1 PM',
-      img: Pics.snowy,
-      temp: '23°',
-    },
-    {
-      time: '3 PM',
-      img: Pics.thunder,
-      temp: '23°',
-    },
-    {
-      time: '5 PM',
-      img: Pics.rain,
-      temp: '23°',
-    },
-    {
-      time: '10 PM',
-      img: Pics.rain,
-      temp: '23°',
-    },
-  ];
 
-  const data2 = [
-    {
-      city: 'Delhi',
-      img: Pics.cloudy,
-      weather: 'Sunny',
-      degree:'9°',
-    },
-    {
-      city: 'Kolkata',
-      img: Pics.snowy,
-      weather: 'Snowy',
-      degree:'9°',
-    },
-    {
-      city: 'Hyderabad',
-      img: Pics.rain,
-      weather: 'Rainy',
-      degree:'9°',
-    },
-  ];
+  const [longitude, setLongitude] = useState<number>();
+  const [latitude, setLatitude] = useState<number>();
+  const { navigate } = useNavigation();
+ 
+  const [address, setaddress] = useState('Chandigarh');
 
-  const renderItem = ({item}) => {
-    return (
-      <View>
-        <LinearGradient colors={['#957DCD','#523D7F']} style={styles.linearGradient2} >
-        <Text style={styles.time}>{item.time}</Text>
-          <item.img style={styles.imgg}/>
-          <Text style={styles.temp}>{item.temp}</Text>
-        </LinearGradient>
-      </View>
+  // NOTIFICATION
+  const requestPermissions = () => {
+    if (Platform.OS == 'ios') {
+      PushNotificationIOS.requestPermissions({
+        alert: true,
+        badge: true,
+        sound: true,
+        critical: true,
+      }).then(
+        (data) => {
+          console.log('PushNotificationIOS.requestPermissions', data);
+        },
+        (data) => {
+          console.log('PushNotificationIOS.requestPermissions failed', data);
+        },
+      );
+    }
+    return PushNotification.requestPermissions()
+  }
+  const createNotificationChannel = () => {
+    PushNotification.createChannel({
+      channelId: 'buddy',
+      channelName: 'Buddy',
+      channelDescription: 'Buddy',
+      soundName: 'default',
+      vibrate: true,
+    },
+      (created) => console.log(`createChannel 'buddy' returned ‘${created}’`) // (optional) callback returns whether the channel was created, false means it already existed.
     );
-  };
-
-  const renderData =({item}) => {
-    return (
-      <View>
-        <LinearGradient colors={['#957DCD','#523D7F']} style={styles.linearGradient3} >
-          <Text style={styles.city}>{item.city}</Text>
-          <item.img style={styles.imggg}/>
-          <Text style={styles.weather}>{item.weather}</Text>
-          <Text style={styles.degree}>{item.degree}</Text>
-        </LinearGradient>
-      </View>
-
-    );
-  };
-
-
-
-  const { isLoading, error, data:yt } = useQuery('', async () => {
-    const response = await axios.get('https://weatherapi-com.p.rapidapi.com/current.json',
-    {
-      params: {q: '30.7,76.7'},
-      headers: {
-        'X-RapidAPI-Key': '9c990d7ed0msh6437e1bae24d7eep1c6402jsncf6c307781da',
-        'X-RapidAPI-Host': 'weatherapi-com.p.rapidapi.com'
-      }
+    requestPermissions()
+  }
+  useEffect(() => {
+    createNotificationChannel();
+  }, [])
+  const testpush = () => {
+    // console.log('bell pressed');
+    PushNotification.localNotification({
+      channelId: "buddy",
+      title: "Bell Pressed", // (optional)
+      message: "Notification", // (required)
     });
-    console.log(response.data.current);
+  }
+  const testschepush = () => {
+    PushNotification.localNotificationSchedule({
+      channelId: "buddy",
+      //... You can use all the options from localNotifications
+      message: "My Notification Message", // (required)
+      date: new Date(Date.now() + 1 * 1000), // in 10 secs
+    });
+  }
+
+
+  // GEOLOCATION
+  const getLocation = async () => {
+    try {
+      const permission = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION, {
+        title: Strings.permissions.title,
+        message: Strings.permissions.message,
+      },
+      );
+      if (permission === 'granted') {
+        const currentLocation = await Geolocation.getCurrentPosition(
+          (position) => {
+            // console.log('hhhhhhhhhh', position);
+            //getting latitude
+            const currentLatitude = (position.coords.latitude);
+            //set latitude
+            setLatitude(currentLatitude);
+            //getting longitude
+            const currentLongitude = (position.coords.longitude);
+            // set longitude
+            setLongitude(currentLongitude);
+      
+        
+            const lat =  latitude;
+          const lng = longitude;
+         Geocoder.geocodePosition({lat: lat, lng: lng}).then(respo => {
+           setaddress(respo);
+          console.log('vfcghvbhcdyxcghghdgcfvh',respo[0].adminArea);
+        });
+      }
+
+          
+        );
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }
+
+
+  }
+  useEffect(() => {
+    getLocation();
+  }, []);
+
+
+  const test = `${latitude}, ${longitude}`;
+  const [loc, setLoc] = useState('30.7333, 76.7794');
+  const [locName, setLocName] = useState('Chandigarh');
+
+  // FLATLIST 1 
+  const renderItem = ({ item }) => {
+    const date = new Date(`${item.time}`)
+    // console.log(item.condition.icon);
+    return (
+      <View>
+        <LinearGradient colors={[colors.lpurple, colors.dpurple]} style={styles.linearGradient2} >
+          <Text style={styles.time}>{format(date, 'h a')}</Text>
+          <Image source={{ uri: 'https:' + item.condition.icon }} style={styles.imgg} />
+          <Text style={styles.temp}>{item.temp_c + '°'}</Text>
+        </LinearGradient>
+      </View>
+    );
+  };
+
+  const setLocation = async(item)=>{
+   await setLoc(item.loc)
+    refetch()
     
+  }
+
+  // FLATLIST 2
+  const renderData = ({ item }) => {
+    return (
+      <View>
+        <TouchableOpacity onPress={()=>setLocation(item)}>
+        <LinearGradient colors={[colors.lpurple, colors.dpurple]} style={styles.linearGradient3} >
+          <Text style={styles.city}>{item.city}</Text>
+          <item.img style={styles.imggg} />
+          {/* <Text style={styles.weather}>{item.weather}</Text>
+          <Text style={styles.degree}>{item.degree}</Text> */}
+        </LinearGradient>
+        </TouchableOpacity>
+      </View>
+
+    );
+  };
+
+  // APIS
+
+  const { isLoading, error, data: currentData, refetch } = useQuery('', async () => {
+    // console.log(`${latitude},${longitude}`);
+    const response = await axios.get(BASE_URL + CURRENT,
+      {
+        // params: {q: `${latitude},${longitude}`}, 
+
+        params: { q: loc },
+        headers: {
+          'X-RapidAPI-Key': API_KEY,
+          'X-RapidAPI-Host': API_HOST
+        }
+      });
+    console.log('result    ', response.data.location.name);
+    setLocName(response.data.location.name)
+    forecastRefetch();
+
     return response.data;
   });
-  if (isLoading) {
-    return <View><Text>Loading...</Text></View>;
+
+  const { isLoading: forecastLoading, error: forecastError, data: forecastData, refetch: forecastRefetch } = useQuery('gggg', async () => {
+    const response = await axios.get(BASE_URL + FORECAST,
+      {
+
+        params: {
+          q: locName,
+          days: '7'
+        },
+        headers: {
+          'X-RapidAPI-Key': API_KEY,
+          'X-RapidAPI-Host': API_HOST
+
+        }
+      });
+    console.log('bbbbb', response.data.forecast.forecastday[0].hour[0].temp_c);
+
+    return response.data;
+  });
+
+  if (isLoading || forecastLoading) {
+    return <View>
+      <ImageBackground source={require('../../assets/images/img.png')}>
+        <LinearGradient colors={[colors.blue, colors.purple]} style={styles.linearGradient}>
+          <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+            <ActivityIndicator size={'large'} color={'white'} />
+          </View>
+        </LinearGradient>
+      </ImageBackground>
+
+    </View>;
   }
-  if (error) {
-    return <View><Text>An error has occurred:{error.message}</Text></View>;
+  
+  if (error || forecastError) {
+    return <View><Text>{Strings.error}</Text></View>;
   }
-
-
-  const renderWeather =({item}) => {
-    return (
-      <View>
-       {/* console.log(item.cloud); */}
-          <Text style={styles.city}>{item.cloud}</Text>
-          <item.img style={styles.imggg}/>
-          <Text style={styles.weather}>{item.weather}</Text>
-          <Text style={styles.degree}>{item.degree}</Text>
-        
-      </View>
-
-    );
-  };
-
-  // const requestLocationPermission = async () => {
-  //   try {
-  //     const granted = await PermissionsAndroid.request(
-  //       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-  //       {
-  //         title: 'location Permission',
-  //         message: 'Whats your location?',
-  //         buttonNeutral: 'Ask Me Later',
-  //         buttonNegative: 'Cancel',
-  //         buttonPositive: 'OKAY',
-  //       },
-  //     );
-  //     console.log('granted', granted);
-  //     if (granted === 'granted') {
-  //       console.log('You can use Geolocation');
-  //       return true;
-  //     } else {
-  //       console.log('You cannot use Geolocation');
-  //       return false;
-  //     }
-  //   } catch (err) {
-  //     return false;
-  //   }
-  // };
-  // useEffect(()=>{
-  //   requestLocationPermission();
-  // },[]);
-
-
+  const date = new Date(`${currentData.location?.localtime}`);
+  const datarefresh = () => {
+    refetch();
+    forecastRefetch();
+  }
 
   return (
-    <ImageBackground source={require('../../assets/images/img.png')} style={{flex:1}}>
     
-    <LinearGradient colors={['#331972', '#33143C']} style={styles.linearGradient}>
-      
-      {/* <Pics.bg style={styles.bgi} /> */}
-    <View style={styles.mainview}>
+    <ImageBackground source={require('../../assets/images/img.png')} style={{ flex: 1 }}>
 
-    <View style={styles.header}>
-      <Pics.rec/>
-      <Text style={styles.text1}>{yt.location.name}</Text>
-      <Pics.reload/>
-    </View>
-      <Text style={styles.text2}> Mostly Sunny</Text>
-      <Pics.cloudyweather style={styles.cloudpic} />
-      <Text style={styles.text3}>{yt.current.temp_c}°</Text>
-      <Text style={styles.text4}>Friday, 26 August 2022 | 10:00</Text>
+      <LinearGradient colors={[colors.blue, colors.purple]} style={styles.linearGradient}>
+      <ScrollView style={{marginBottom:85}}>
 
-      <LinearGradient colors={['#957DCD','#523D7F']} style={styles.linearGradient1} >
-      <View style={styles.compview}>
-      <Txt Img={Pics.precipitation}  txt1={'30%'} txt2='Precipitation'/>
-      <Txt Img={Pics.humidity}  txt1={'20%'} txt2='Humidity' />
-      <Txt Img={Pics.wind}  txt1={'9km/h'} txt2='WindSpeed'/>
-      </View>
+          <View style={styles.mainview}>
+
+            <View style={styles.header}>
+
+              <TouchableOpacity onPress={testschepush}>
+                <Pics.rec />
+              </TouchableOpacity>
+
+              <Text style={styles.text1}>{currentData.location?.name}</Text>
+
+              <TouchableOpacity onPress={datarefresh}>
+                <Pics.reload />
+              </TouchableOpacity>
+
+            </View>
+
+            <Text style={styles.text2}>{currentData.current?.condition.text}</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Image source={{ uri: 'https:' + currentData.current?.condition.icon }} style={{ alignItems: 'center', justifyContent: 'center', height: 150, width: 150 }} />
+            </View>
+            <Text style={styles.text3}>{currentData.current?.temp_c}°</Text>
+            <Text style={styles.text4}>{format(date, 'EEEE, do MMMM yyyy | pp')}</Text>
+
+            <LinearGradient colors={[colors.lpurple, colors.dpurple]} style={styles.linearGradient1} >
+              <View style={styles.compview}>
+                <DetailBox Img={Pics.precipitation} txt1={currentData.current.precip_mm + ' mm'} txt2='Precipitation' />
+                <DetailBox Img={Pics.humidity} txt1={currentData.current.humidity + ' %'} txt2='Humidity' />
+                <DetailBox Img={Pics.wind} txt1={currentData.current.wind_kph + ' km/h'} txt2='WindSpeed' />
+              </View>
+            </LinearGradient>
+
+            <View style={styles.view1}>
+              <Text style={{ color: colors.white }}>{Strings.home.today}</Text>
+              <TouchableOpacity onPress={() => { navigate('detailsScreen') }}>
+                <Text style={{ color: colors.white }}>{Strings.home.day_forecasts}</Text>
+              </TouchableOpacity>
+            </View>
+
+            <FlatList data={forecastData.forecast.forecastday[0].hour} renderItem={renderItem} horizontal={true} showsHorizontalScrollIndicator={false} />
+
+            <View style={styles.view2}>
+              <Text style={styles.text5}>{Strings.home.cities}</Text>
+              {/* <Text style={styles.text5}>+</Text> */}
+            </View>
+
+            <FlatList data={citiesData} renderItem={renderData} horizontal={true} showsHorizontalScrollIndicator={false} />
+
+
+          </View>
+          </ScrollView>
       </LinearGradient>
       
-      <View style={styles.view1}>
-      <Text style={{color:'white'}}>Today</Text>
-      <Text style={{color:'white'}}>7-Day Forecasts</Text>
-      </View>
-      
-      <FlatList data={data1} renderItem={renderItem} horizontal={true} showsHorizontalScrollIndicator={false}/>
-      
-      <View style={styles.view2}>
-      <Text style={styles.text5}>Other Cities</Text>
-      <Text style={styles.text5}>+</Text>
-      </View>
-
-      <FlatList data={data2} renderItem={renderData} horizontal={true} showsHorizontalScrollIndicator={false}/>
-
-      
-    </View>
-
-    </LinearGradient>
     </ImageBackground>
-   
+    
   );
 };
 

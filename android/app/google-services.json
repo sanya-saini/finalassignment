@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "283227621719",
+    "project_id": "skyspy-d75e0",
+    "storage_bucket": "skyspy-d75e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:283227621719:android:af8d7949a716ee49679612",
+        "android_client_info": {
+          "package_name": "com.skyspy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "283227621719-t2m2l6o5f0km61ipctpv8meo69n9m4hs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBouXL0PXRmTL8bBVgJf4WlQpsnmCBRKKo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "283227621719-t2m2l6o5f0km61ipctpv8meo69n9m4hs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

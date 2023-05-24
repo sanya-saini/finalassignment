@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import fonts from "../../assets/fonts";
+import colors from "../../assets/colors";
 
 export const styles = StyleSheet.create({
     linearGradient: {
@@ -8,40 +9,36 @@ export const styles = StyleSheet.create({
         borderRadius: 5,
         opacity: 0.8,
         height: 900,
-        // elevation:1,
-        // zIndex:1
     },
     header: {
         flex: 1,
         flexDirection: 'row',
         justifyContent: "space-around",
         marginTop: 20,
-        marginHorizontal: -60,
         position: 'absolute',
-        marginLeft: 20,
+        marginLeft: 15,
     },
     text1: {
-        color: 'white',
+        color: colors.white,
         textAlign: 'center',
         fontWeight: '400',
         fontSize: 18,
         marginTop: 5,
         marginLeft: 120,
-        fontFamily: fonts.REGULAR,
+        fontFamily: fonts.SEMIBOLD,
     },
     linearGradient1: {
-        position: 'absolute',
-        width: 387,
+        // position: 'absolute',
+        // width: 362,
         height: 255,
-        marginLeft: -6,
-        marginTop: 80,
-        borderRadius: 5,
+        // marginHorizontal:15,
+        marginTop: 90,
+        borderRadius: 15,
     },
     compview1: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginHorizontal: 35,
-        // marginTop:150,
     },
     cloudpic: {
         width: 169,
@@ -51,36 +48,36 @@ export const styles = StyleSheet.create({
     view1: {
         justifyContent: 'space-between',
         flexDirection: 'row',
-        color: '#fff',
+        color: colors.white,
     },
     t1: {
-        color: '#fff',
+        color: colors.white,
         position: 'absolute',
-        marginLeft: 230,
-        marginTop: 20,
+        marginLeft: 150,
+        marginTop: 30,
         fontFamily: fonts.SEMIBOLD,
         fontWeight: '600',
-        fontSize:50,
+        fontSize: 45,
     },
     t2: {
-        color: '#fff',
+        color: colors.white,
         position: 'absolute',
-        marginLeft: 295,
-        marginTop: 60,
+        marginLeft: 265,
+        marginTop: 70,
         fontFamily: fonts.REGULAR,
         fontWeight: '600',
-        fontSize:30,
+        fontSize: 25,
     },
     t3: {
-        color: '#fff',
+        color: colors.white,
         position: 'absolute',
-        marginLeft: 320,
-        marginTop: 70,
+        marginLeft: 290,
+        marginTop: 80,
         fontFamily: fonts.SEMIBOLD,
         fontWeight: '600',
-        fontSize:25,
+        fontSize: 20,
     },
-    compview2:{
-        marginTop:380,  
+    compview2: {
+        marginTop: 40,
     }
 })

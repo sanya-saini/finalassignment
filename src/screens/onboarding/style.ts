@@ -6,27 +6,51 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#352163',
     flexDirection: 'column',
-    marginTop : 20
+  },
+  imgView: {
+    alignItems: 'center', height: 300, width: 300, flex: 0.5
   },
   img: {
-    marginLeft:60,
-    marginTop: -100,
+    marginLeft: 60,
+    marginTop: 50,
   },
-  text: {
-    color: 'white',
-    // marginTop:50,
-    textAlign:'center',
+  textView: {
+    backgroundColor: 'white', flex: 0.65, width: '100%', borderTopStartRadius: 200, borderTopEndRadius: 200
+  },
+  text1: {
+    color: '#352163',
+    marginTop: 150,
+    textAlign: 'center',
     fontSize: 30,
     fontWeight: 'bold',
   },
-  text1: {
-    color: 'white',
-    marginTop:30,
-    textAlign:'center',
-    fontSize: 15,
+  text2: {
+    color: '#352163',
+    textAlign: 'center',
+    fontSize: 30,
+    fontWeight: 'bold',
   },
-  // next:{
-  //   margin:-5
-  // }
+  text3: {
+    color: 'grey',
+    marginTop: 30,
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  text4: {
+    color: 'grey',
+    textAlign: 'center',
+    fontSize: 16,
+  },
+
+  next: {
+    padding: 10,
+    fontSize: 30,
+    position: 'absolute',
+    backgroundColor: '#352163',
+    bottom: 5,
+    right: 60,
+    borderRadius: 20
+
+  }
 });
 export default styles;
