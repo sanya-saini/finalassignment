@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { useNavigation } from '@react-navigation/native';
 import { API_HOST, API_KEY, BASE_URL, CURRENT, FORECAST } from '../../services/endpoints';
 import colors from '../../assets/colors';
+import routes from '../../assets/routes';
 
 
 const DetailsScreen = () => {
@@ -63,7 +64,7 @@ const DetailsScreen = () => {
 
     <LinearGradient colors={[colors.violet, colors.blue, colors.purple]} style={styles.linearGradient}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => { navigate('Home') }}>
+        <TouchableOpacity onPress={() => { navigate(routes.Dashboard.Home.path) }}>
           <Pics.arrow />
         </TouchableOpacity>
         <Text style={styles.text1}>3 Days</Text>

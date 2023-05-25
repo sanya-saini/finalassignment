@@ -14,8 +14,8 @@ export const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     arrowPic: {
-        position: 'absolute',
-        top: 20,
+        // position: 'absolute',
+        // top: 20,
         // left: 10
     },
     text1: {

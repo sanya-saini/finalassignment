@@ -12,6 +12,7 @@ import Search from '../screens/search';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Text, View } from 'react-native';
 import colors from '../assets/colors';
+import routes from '../assets/routes';
 
 const TabNav = createBottomTabNavigator();
 
@@ -147,9 +148,9 @@ const AppNav = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {isLoading ? <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} /> : null}
-        {onboard?<Stack.Screen name='SwiperComponent' component={SwiperComponent} options={{headerShown: false}} />:null}
-        <Stack.Screen name='DashboardNavigation' component={DashboardNavigation} options={{ headerShown: false }} />
+        {isLoading ? <Stack.Screen name={routes.splash.path} component={Splash} options={{ headerShown: false }} /> : null}
+        {onboard?<Stack.Screen name={routes.SwiperComponent.path} component={SwiperComponent} options={{headerShown: false}} />:null}
+        <Stack.Screen name={routes.Dashboard.path} component={DashboardNavigation} options={{ headerShown: false }} />
 
         {/* <Stack.Screen name='Home' component={Home} options={{headerShown: false}} /> */}
       </Stack.Navigator>

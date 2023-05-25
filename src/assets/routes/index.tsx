@@ -1,16 +1,23 @@
 const routes = {
-    splash : {
+    splash: {
         path: "Splash",
     },
-    SwiperComponent : {
-        path : "SwiperComponent",
+    SwiperComponent: {
+        path: "SwiperComponent",
     },
-    Dashboard : {
-        path :"DashboardNavigation",
+    Dashboard: {
+        path: "DashboardNavigation",
         Home: {
-            path : "Home"
+            path: "Home"
         },
-        
-    }.
+        detailsScreen: {
+            path: 'detailsScreen',
+        },
+        Search:{
+            path:'Search',
+        }
+
+
+    }
 };
 export default routes;

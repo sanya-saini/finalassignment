@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
     t2: {
         color: colors.white,
         position: 'absolute',
-        marginLeft: 265,
+        marginLeft: 250,
         marginTop: 70,
         fontFamily: fonts.REGULAR,
         fontWeight: '600',
@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
     t3: {
         color: colors.white,
         position: 'absolute',
-        marginLeft: 290,
+        marginLeft: 270,
         marginTop: 80,
         fontFamily: fonts.SEMIBOLD,
         fontWeight: '600',

@@ -17,6 +17,7 @@ import { API_HOST, API_KEY, BASE_URL, CURRENT, FORECAST } from '../../services/e
 import { Strings } from '../../constants/strings';
 import citiesData from './cities';
 import Geocoder from 'react-native-geocoder';
+import routes from '../../assets/routes';
 
 const Home = () => {
 
@@ -207,17 +208,18 @@ const Home = () => {
   });
 
   if (isLoading || forecastLoading) {
-    return <View>
-      <ImageBackground source={require('../../assets/images/img.png')}>
-        <LinearGradient colors={[colors.blue, colors.purple]} style={styles.linearGradient}>
-          <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-            <ActivityIndicator size={'large'} color={'white'} />
-          </View>
-        </LinearGradient>
-      </ImageBackground>
+    return (<View>
+        <ImageBackground source={require('../../assets/images/img.png')}>
+            <LinearGradient colors={[colors.blue, colors.purple]} style={styles.linearGradient}>
+                <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                    <ActivityIndicator size={'large'} color={'white'} />
+                </View>
+            </LinearGradient>
+        </ImageBackground>
 
-    </View>;
-  }
+    </View>)
+}
+  
   
   if (error || forecastError) {
     return <View><Text>{Strings.error}</Text></View>;
@@ -232,8 +234,8 @@ const Home = () => {
     
     <ImageBackground source={require('../../assets/images/img.png')} style={{ flex: 1 }}>
 
-      <LinearGradient colors={[colors.blue, colors.purple]} style={styles.linearGradient}>
-      <ScrollView style={{marginBottom:85}}>
+      <LinearGradient colors={[colors.blue, colors.purple]} style={styles.maingradient}>
+      <ScrollView >
 
           <View style={styles.mainview}>
 
@@ -268,7 +270,7 @@ const Home = () => {
 
             <View style={styles.view1}>
               <Text style={{ color: colors.white }}>{Strings.home.today}</Text>
-              <TouchableOpacity onPress={() => { navigate('detailsScreen') }}>
+              <TouchableOpacity onPress={() => { navigate(routes.Dashboard.detailsScreen.path) }}>
                 <Text style={{ color: colors.white }}>{Strings.home.day_forecasts}</Text>
               </TouchableOpacity>
             </View>

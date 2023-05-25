@@ -5,7 +5,8 @@ import colors from "../../assets/colors";
 export const styles = StyleSheet.create({
 
     mainview: {
-        zIndex: 1
+        zIndex: 1,
+        marginBottom:85,
     },
     header: {
         flexDirection: 'row',
@@ -53,9 +54,16 @@ export const styles = StyleSheet.create({
         fontFamily: fonts.REGULAR,
     },
     linearGradient: {
+        paddingLeft: 15,
+        paddingRight: 15,
         borderRadius: 5,
         opacity: 0.8,
         height: 900,
+    },
+    maingradient : {
+        borderRadius: 5,
+        opacity: 0.8,
+        // height: 900,
         flex:1
         // elevation:1,
         // zIndex:1
